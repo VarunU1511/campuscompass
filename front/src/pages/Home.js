@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
-import CategoryIcon from '../components/common/CategoryIcon';
-import { useAuth } from '../context/AuthContext';
-import AdminNavbar from '../components/navigation/AdminNavbar';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import { Link, useNavigate } from "react-router-dom";
+import CategoryIcon from "../components/common/CategoryIcon";
+import { useAuth } from "../context/AuthContext";
+import AdminNavbar from "../components/navigation/AdminNavbar";
+import axios from "axios";
 
 const Container = styled.div`
   width: 100%;
@@ -16,7 +16,8 @@ const Container = styled.div`
 const HeroSection = styled.section`
   height: 500px;
   width: 100%;
-  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/images/home.jpg');
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url("/images/home.jpg");
   background-size: cover;
   background-position: center;
   display: flex;
@@ -41,32 +42,25 @@ const HeroContent = styled.div`
 
 const SearchContainer = styled.div`
   display: flex;
-  gap: 1rem;
-  max-width: 600px;
-  margin: 0 auto;
-  background: white;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  justify-content: center;
 `;
 
 const SearchInput = styled.input`
   flex: 1;
-  padding: 0.75rem;
+  padding: 1rem 12rem;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 1rem;
 `;
 
 const SearchButton = styled.button`
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 2rem;
   background: #007bff;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 1rem;
-
   &:hover {
     background: #0056b3;
   }
@@ -85,7 +79,7 @@ const CategoryGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
-  
+
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -96,7 +90,7 @@ const CategoryCard = styled.div`
   padding: 2rem;
   border-radius: 8px;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
 
   &:hover {
@@ -125,7 +119,7 @@ const ListingGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
-  
+
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
@@ -135,7 +129,7 @@ const ListingCard = styled.div`
   background: white;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const ListingImage = styled.img`
@@ -178,7 +172,7 @@ const Home = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [featuredRestaurants, setFeaturedRestaurants] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -191,13 +185,15 @@ const Home = () => {
   useEffect(() => {
     const fetchFeaturedRestaurants = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/api/listings/restaurants');
+        const response = await axios.get(
+          "http://localhost:5001/api/listings/restaurants"
+        );
         if (response.data.success) {
           // Get first 3 restaurants
           setFeaturedRestaurants(response.data.listings.slice(0, 3));
         }
       } catch (error) {
-        console.error('Error fetching featured restaurants:', error);
+        console.error("Error fetching featured restaurants:", error);
       }
     };
 
@@ -209,30 +205,35 @@ const Home = () => {
       return null;
     }
 
-    if (imagePath.startsWith('http')) {
+    if (imagePath.startsWith("http")) {
       return imagePath;
     }
 
     // Clean up the path
     const cleanPath = imagePath
-      .split('\\').pop() // Remove Windows-style path
-      .split('/').pop(); // Get just the filename
-    
+      .split("\\")
+      .pop() // Remove Windows-style path
+      .split("/")
+      .pop(); // Get just the filename
+
     // Ensure we're using the correct path format
     return `${process.env.REACT_APP_API_URL}/uploads/listings/${cleanPath}`;
   };
 
   return (
     <>
-      {user?.role === 'admin' && <AdminNavbar />}
+      {user?.role === "admin" && <AdminNavbar />}
       <HeroSection>
         <HeroContent>
           <h1>Find Your Perfect College Space</h1>
-          <p>Student accommodations, dining options, and local services tailored for you</p>
+          <p>
+            Student accommodations, dining options, and local services tailored
+            for you
+          </p>
           <SearchContainer>
             <form onSubmit={handleSearch}>
-              <SearchInput 
-                placeholder="Enter location or college name" 
+              <SearchInput
+                placeholder="Search for listings"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -246,17 +247,17 @@ const Home = () => {
         <CategorySection>
           <h2>Popular Categories</h2>
           <CategoryGrid>
-            <CategoryCard onClick={() => navigate('/accommodations')}>
+            <CategoryCard onClick={() => navigate("/accommodations")}>
               <CategoryIcon type="accommodation" />
               <h3>Accommodations</h3>
               <p>500+ listings</p>
             </CategoryCard>
-            <CategoryCard onClick={() => navigate('/restaurants')}>
+            <CategoryCard onClick={() => navigate("/restaurants")}>
               <CategoryIcon type="restaurant" />
               <h3>Restaurants</h3>
               <p>200+ options</p>
             </CategoryCard>
-            <CategoryCard onClick={() => navigate('/shops')}>
+            <CategoryCard onClick={() => navigate("/shops")}>
               <CategoryIcon type="shop" />
               <h3>Shops</h3>
               <p>300+ stores</p>
@@ -272,13 +273,13 @@ const Home = () => {
         <FeaturedSection>
           <h2>Featured Listings</h2>
           <ListingGrid>
-            {featuredRestaurants.map(restaurant => (
+            {featuredRestaurants.map((restaurant) => (
               <ListingCard key={restaurant._id}>
-                <ListingImage 
-                  src={getImageUrl(restaurant.images[0])} 
+                <ListingImage
+                  src={getImageUrl(restaurant.images[0])}
                   alt={restaurant.title}
                   onError={(e) => {
-                    console.error('Image failed to load:', e.target.src);
+                    console.error("Image failed to load:", e.target.src);
                   }}
                   crossOrigin="anonymous"
                 />
