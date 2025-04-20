@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
-import axios from 'axios';
-import config from '../config/config';
-import ReviewSection from '../components/ReviewSection';
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import styled from "styled-components";
+import axios from "axios";
+import config from "../config/config";
+import ReviewSection from "../components/ReviewSection";
 
 const PGDetails = () => {
   const { id } = useParams();
@@ -17,15 +17,19 @@ const PGDetails = () => {
   useEffect(() => {
     const fetchListing = async () => {
       try {
-        const response = await axios.get(`${config.API_URL}/api/listings/accommodations/${id}`);
+        const response = await axios.get(
+          `${config.API_URL}/api/listings/accommodations/${id}`
+        );
         if (response.data.success) {
           setListing(response.data.listing);
         } else {
-          throw new Error(response.data.message || 'Failed to fetch listing');
+          throw new Error(response.data.message || "Failed to fetch listing");
         }
       } catch (error) {
-        console.error('Error fetching listing:', error);
-        setError(error.response?.data?.message || 'Error fetching listing details');
+        console.error("Error fetching listing:", error);
+        setError(
+          error.response?.data?.message || "Error fetching listing details"
+        );
       } finally {
         setLoading(false);
       }
@@ -50,49 +54,69 @@ const PGDetails = () => {
       return null;
     }
 
-    if (imagePath.startsWith('http')) {
+    if (imagePath.startsWith("http")) {
       return imagePath;
     }
 
     // Clean up the path
     const cleanPath = imagePath
-      .split('\\').pop() // Remove Windows-style path
-      .split('/').pop(); // Get just the filename
+      .split("\\")
+      .pop() // Remove Windows-style path
+      .split("/")
+      .pop(); // Get just the filename
 
     // Use fetch to get the image with proper credentials
     return `${process.env.REACT_APP_API_URL}/uploads/listings/${cleanPath}`;
   };
 
-  const ContactDialog = ({ onClose }) => (
-    <DialogOverlay onClick={onClose}>
-      <DialogContent onClick={e => e.stopPropagation()}>
-        <DialogHeader>
-          <DialogTitle>Contact Details</DialogTitle>
-          <CloseButton onClick={onClose}>&times;</CloseButton>
-        </DialogHeader>
-        
-        <DialogBody>
-          <ContactSection>
-            <ContactTitle>Owner Information</ContactTitle>
-            <ContactInfo>
-              <InfoItem>
-                <Label>Name:</Label>
-                <Value>{listing?.owner?.name || 'Not available'}</Value>
-              </InfoItem>
-              <InfoItem>
-                <Label>Email:</Label>
-                <Value>{listing?.owner?.email || 'Not available'}</Value>
-              </InfoItem>
-              <InfoItem>
-                <Label>Phone:</Label>
-                <Value>{listing?.owner?.phone || 'Not available'}</Value>
-              </InfoItem>
-            </ContactInfo>
-          </ContactSection>
-        </DialogBody>
-      </DialogContent>
-    </DialogOverlay>
-  );
+  const ContactDialog = ({ onClose }) => {
+    const handleWhatsAppClick = () => {
+      const phoneNumber = listing?.owner?.phone || "7385618460";
+      const message = encodeURIComponent(
+        "Hi, I'm interested in your listing on Campus Compass. Could you please share more details?"
+      );
+      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+      window.open(whatsappUrl, "_blank");
+    };
+
+    return (
+      console.log(listing),
+      (
+        <DialogOverlay onClick={onClose}>
+          <DialogContent onClick={(e) => e.stopPropagation()}>
+            <DialogHeader>
+              <DialogTitle>Contact Details</DialogTitle>
+              <CloseButton onClick={onClose}>&times;</CloseButton>
+            </DialogHeader>
+
+            <DialogBody>
+              <ContactSection>
+                <ContactTitle>Owner Information</ContactTitle>
+                <ContactInfo>
+                  <InfoItem>
+                    <Label>Name:</Label>
+                    <Value>{listing?.owner?.name || "Not available"}</Value>
+                  </InfoItem>
+                  <InfoItem>
+                    <Label>Email:</Label>
+                    <Value>{listing?.owner?.email || "Not available"}</Value>
+                  </InfoItem>
+                  <InfoItem>
+                    <Label>Phone:</Label>
+                    <Value>{listing?.owner?.phone || "7385618460"}</Value>
+                  </InfoItem>
+                </ContactInfo>
+              </ContactSection>
+              <WhatsAppButton onClick={handleWhatsAppClick}>
+                <WhatsAppIcon>💬</WhatsAppIcon>
+                Chat with Owner
+              </WhatsAppButton>
+            </DialogBody>
+          </DialogContent>
+        </DialogOverlay>
+      )
+    );
+  };
 
   if (loading) return <LoadingMessage>Loading...</LoadingMessage>;
   if (error) return <ErrorMessage>{error}</ErrorMessage>;
@@ -111,30 +135,30 @@ const PGDetails = () => {
         <ImageSection>
           <MainImage>
             {imageLoading && <LoadingSpinner>Loading...</LoadingSpinner>}
-            <img 
+            <img
               src={getImageUrl(listing?.images?.[currentImageIndex])}
-              alt={listing?.title || 'PG image'}
+              alt={listing?.title || "PG image"}
               onLoad={handleImageLoad}
               onError={(e) => {
-                console.error('Image failed to load:', e.target.src);
+                console.error("Image failed to load:", e.target.src);
                 setImageLoading(false);
               }}
-              style={{ display: imageLoading ? 'none' : 'block' }}
+              style={{ display: imageLoading ? "none" : "block" }}
               crossOrigin="anonymous"
             />
           </MainImage>
           <ThumbnailContainer>
             {listing.images.map((image, index) => (
-              <Thumbnail 
+              <Thumbnail
                 key={index}
                 onClick={() => handleImageChange(index)}
                 active={currentImageIndex === index}
               >
-                <img 
+                <img
                   src={getImageUrl(image)}
                   alt={`${listing.title} - Thumbnail ${index + 1}`}
                   onError={(e) => {
-                    console.error('Thumbnail failed to load:', e.target.src);
+                    console.error("Thumbnail failed to load:", e.target.src);
                   }}
                   crossOrigin="anonymous"
                 />
@@ -150,7 +174,9 @@ const PGDetails = () => {
         Contact Owner
       </ContactButton>
 
-      {showContactDialog && <ContactDialog onClose={() => setShowContactDialog(false)} />}
+      {showContactDialog && (
+        <ContactDialog onClose={() => setShowContactDialog(false)} />
+      )}
 
       <ReviewSection listingId={listing._id} ownerId={listing.owner?._id} />
     </PageContainer>
@@ -162,20 +188,6 @@ const PageContainer = styled.div`
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-`;
-
-const ContentWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
 `;
 
 const ImageSection = styled.div`
@@ -213,19 +225,13 @@ const Thumbnail = styled.div`
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
-  border: 2px solid ${props => props.active ? '#4B49AC' : 'transparent'};
+  border: 2px solid ${(props) => (props.active ? "#4B49AC" : "transparent")};
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-`;
-
-const DetailsSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
 `;
 
 const Title = styled.h1`
@@ -241,7 +247,7 @@ const Location = styled.p`
 const Price = styled.div`
   font-size: 2rem;
   font-weight: bold;
-  color: #4B49AC;
+  color: #4b49ac;
 
   span {
     font-size: 1rem;
@@ -249,67 +255,9 @@ const Price = styled.div`
   }
 `;
 
-const Section = styled.div`
-  margin: 20px 0;
-  padding: 20px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-`;
-
-const SectionTitle = styled.h2`
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-  color: #333;
-`;
-
-const DetailGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-`;
-
-const DetailItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
-
-const DetailLabel = styled.span`
-  color: #666;
-  font-size: 0.9rem;
-`;
-
-const DetailValue = styled.span`
-  font-size: 1.1rem;
-  color: #333;
-`;
-
 const Description = styled.p`
   color: #666;
   line-height: 1.6;
-`;
-
-const OwnerDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-`;
-
-const BookingButton = styled.button`
-  margin-top: 1rem;
-  padding: 1rem 2rem;
-  background: #4B49AC;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
-
-  &:hover {
-    background: #3f3e8f;
-  }
 `;
 
 const DialogOverlay = styled.div`
@@ -354,7 +302,7 @@ const CloseButton = styled.button`
   cursor: pointer;
   color: #666;
   padding: 0.5rem;
-  
+
   &:hover {
     color: #333;
   }
@@ -369,7 +317,7 @@ const DialogBody = styled.div`
 const ContactSection = styled.div`
   border-bottom: 1px solid #eee;
   padding-bottom: 1rem;
-  
+
   &:last-child {
     border-bottom: none;
   }
@@ -377,7 +325,7 @@ const ContactSection = styled.div`
 
 const ContactTitle = styled.h3`
   font-size: 1.1rem;
-  color: #4B49AC;
+  color: #4b49ac;
   margin-bottom: 1rem;
 `;
 
@@ -402,13 +350,13 @@ const Value = styled.span`
   color: #333;
 `;
 
-const Note = styled.p`
-  color: #666;
-  font-size: 0.9rem;
-  text-align: center;
-  margin-top: 1rem;
-  font-style: italic;
-`;
+// const Note = styled.p`
+//   color: #666;
+//   font-size: 0.9rem;
+//   text-align: center;
+//   margin-top: 1rem;
+//   font-style: italic;
+// `;
 
 const HeaderSection = styled.div`
   margin-bottom: 2rem;
@@ -422,7 +370,7 @@ const RoomInfo = styled.p`
 const ContactButton = styled.button`
   margin-top: 1rem;
   padding: 1rem 2rem;
-  background: #4B49AC;
+  background: #4b49ac;
   color: white;
   border: none;
   border-radius: 4px;
@@ -451,6 +399,29 @@ const LoadingSpinner = styled.div`
   text-align: center;
   padding: 20px;
   color: #666;
+`;
+
+const WhatsAppButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #25d366;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background: #128c7e;
+  }
+`;
+
+const WhatsAppIcon = styled.span`
+  font-size: 1.2rem;
 `;
 
 export default PGDetails;

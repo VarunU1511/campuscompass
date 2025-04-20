@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
-import ReviewSection from '../components/ReviewSection';
-import ErrorBoundary from '../components/ErrorBoundary';
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import styled from "styled-components";
+import ReviewSection from "../components/ReviewSection";
+import ErrorBoundary from "../components/ErrorBoundary";
 
 const RestaurantDetail = () => {
   const { id } = useParams();
@@ -16,28 +16,34 @@ const RestaurantDetail = () => {
   useEffect(() => {
     const fetchListingDetails = async () => {
       try {
-        console.log('Fetching listing details for ID:', id);
+        console.log("Fetching listing details for ID:", id);
         // Validate ID format
         if (!id || id.length !== 24) {
-          throw new Error('Invalid listing ID format');
+          throw new Error("Invalid listing ID format");
         }
 
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/listings/restaurants/${id}`);
-        
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/listings/restaurants/${id}`
+        );
+
         const data = await response.json();
-        console.log('Received listing data:', data);
+        console.log("Received listing data:", data);
 
         if (!response.ok) {
-          throw new Error(`Failed to fetch listing details: ${data.message || response.statusText}`);
+          throw new Error(
+            `Failed to fetch listing details: ${
+              data.message || response.statusText
+            }`
+          );
         }
-        
+
         if (data.success) {
           setListing(data.listing);
         } else {
-          throw new Error(data.message || 'Failed to fetch listing');
+          throw new Error(data.message || "Failed to fetch listing");
         }
       } catch (error) {
-        console.error('Full error object:', error);
+        console.error("Full error object:", error);
         setError(error.message);
       } finally {
         setLoading(false);
@@ -55,15 +61,17 @@ const RestaurantDetail = () => {
       return null;
     }
 
-    if (imagePath.startsWith('http')) {
+    if (imagePath.startsWith("http")) {
       return imagePath;
     }
 
     // Clean up the path
     const cleanPath = imagePath
-      .split('\\').pop() // Remove Windows-style path
-      .split('/').pop(); // Get just the filename
-    
+      .split("\\")
+      .pop() // Remove Windows-style path
+      .split("/")
+      .pop(); // Get just the filename
+
     // Ensure we're using the correct path format
     return `${process.env.REACT_APP_API_URL}/uploads/listings/${cleanPath}`;
   };
@@ -77,36 +85,51 @@ const RestaurantDetail = () => {
     setImageLoading(false);
   };
 
-  const ContactDialog = ({ onClose }) => (
-    <DialogOverlay onClick={onClose}>
-      <DialogContent onClick={e => e.stopPropagation()}>
-        <DialogHeader>
-          <DialogTitle>Contact Details</DialogTitle>
-          <CloseButton onClick={onClose}>&times;</CloseButton>
-        </DialogHeader>
-        
-        <DialogBody>
-          <ContactSection>
-            <ContactTitle>Owner Information</ContactTitle>
-            <ContactInfo>
-              <InfoItem>
-                <Label>Name:</Label>
-                <Value>{listing?.owner?.name || 'Not available'}</Value>
-              </InfoItem>
-              <InfoItem>
-                <Label>Email:</Label>
-                <Value>{listing?.owner?.email || 'Not available'}</Value>
-              </InfoItem>
-              <InfoItem>
-                <Label>Phone:</Label>
-                <Value>{listing?.owner?.phone || 'Not available'}</Value>
-              </InfoItem>
-            </ContactInfo>
-          </ContactSection>
-        </DialogBody>
-      </DialogContent>
-    </DialogOverlay>
-  );
+  const ContactDialog = ({ onClose }) => {
+    const handleWhatsAppClick = () => {
+      const phoneNumber = listing?.owner?.phone || "7385618460";
+      const message = encodeURIComponent(
+        "Hi, I'm interested in your listing on Campus Compass. Could you please share more details?"
+      );
+      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+      window.open(whatsappUrl, "_blank");
+    };
+
+    return (
+      <DialogOverlay onClick={onClose}>
+        <DialogContent onClick={(e) => e.stopPropagation()}>
+          <DialogHeader>
+            <DialogTitle>Contact Details</DialogTitle>
+            <CloseButton onClick={onClose}>&times;</CloseButton>
+          </DialogHeader>
+
+          <DialogBody>
+            <ContactSection>
+              <ContactTitle>Owner Information</ContactTitle>
+              <ContactInfo>
+                <InfoItem>
+                  <Label>Name:</Label>
+                  <Value>{listing?.owner?.name || "Not available"}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Label>Email:</Label>
+                  <Value>{listing?.owner?.email || "Not available"}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Label>Phone:</Label>
+                  <Value>{listing?.owner?.phone || "7385618460"}</Value>
+                </InfoItem>
+              </ContactInfo>
+            </ContactSection>
+            <WhatsAppButton onClick={handleWhatsAppClick}>
+              <WhatsAppIcon>💬</WhatsAppIcon>
+              Chat with Owner
+            </WhatsAppButton>
+          </DialogBody>
+        </DialogContent>
+      </DialogOverlay>
+    );
+  };
 
   return (
     <ErrorBoundary>
@@ -114,30 +137,30 @@ const RestaurantDetail = () => {
         <ImageSection>
           <MainImage>
             {imageLoading && <LoadingSpinner>Loading...</LoadingSpinner>}
-            <img 
+            <img
               src={getImageUrl(listing?.images?.[currentImageIndex])}
-              alt={listing?.title || 'Restaurant image'}
+              alt={listing?.title || "Restaurant image"}
               onLoad={handleImageLoad}
               onError={(e) => {
-                console.error('Image failed to load:', e.target.src);
+                console.error("Image failed to load:", e.target.src);
                 setImageLoading(false);
               }}
-              style={{ display: imageLoading ? 'none' : 'block' }}
+              style={{ display: imageLoading ? "none" : "block" }}
               crossOrigin="anonymous"
             />
           </MainImage>
           <ThumbnailContainer>
             {listing?.images?.map((image, index) => (
-              <Thumbnail 
+              <Thumbnail
                 key={index}
                 onClick={() => handleImageChange(index)}
                 active={currentImageIndex === index}
               >
-                <img 
+                <img
                   src={getImageUrl(image)}
                   alt={`${listing.title} - Thumbnail ${index + 1}`}
                   onError={(e) => {
-                    console.error('Thumbnail failed to load:', e.target.src);
+                    console.error("Thumbnail failed to load:", e.target.src);
                   }}
                   crossOrigin="anonymous"
                 />
@@ -149,13 +172,15 @@ const RestaurantDetail = () => {
         <DetailsSection>
           <Title>{listing.title}</Title>
           <Location>📍 {listing.location}</Location>
-          <Cuisine>{listing.cuisineType.join(', ')}</Cuisine>
+          <Cuisine>{listing.cuisineType.join(", ")}</Cuisine>
           <Price>₹{listing.price} /month</Price>
           <Description>{listing.description}</Description>
           <ContactButton onClick={() => setShowContactDialog(true)}>
             Contact Owner
           </ContactButton>
-          {showContactDialog && <ContactDialog onClose={() => setShowContactDialog(false)} />}
+          {showContactDialog && (
+            <ContactDialog onClose={() => setShowContactDialog(false)} />
+          )}
         </DetailsSection>
         <ReviewSection listingId={listing._id} ownerId={listing.owner?._id} />
       </PageContainer>
@@ -203,8 +228,8 @@ const Thumbnail = styled.div`
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
-  border: 2px solid ${props => props.active ? '#4B49AC' : 'transparent'};
-  
+  border: 2px solid ${(props) => (props.active ? "#4B49AC" : "transparent")};
+
   img {
     width: 100%;
     height: 100%;
@@ -246,7 +271,7 @@ const Description = styled.p`
 `;
 
 const ContactButton = styled.button`
-  background-color: #4B49AC;
+  background-color: #4b49ac;
   color: #fff;
   padding: 0.75rem 1rem;
   border: none;
@@ -296,7 +321,7 @@ const CloseButton = styled.button`
   font-size: 1.5rem;
   cursor: pointer;
   color: #666;
-  
+
   &:hover {
     color: #333;
   }
@@ -346,6 +371,29 @@ const LoadingSpinner = styled.div`
   width: 100%;
   background-color: #f5f5f5;
   color: #666;
+`;
+
+const WhatsAppButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #25d366;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background: #128c7e;
+  }
+`;
+
+const WhatsAppIcon = styled.span`
+  font-size: 1.2rem;
 `;
 
 const RestaurantDetailPage = () => (

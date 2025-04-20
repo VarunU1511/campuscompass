@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
-import ReviewSection from '../components/ReviewSection';
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import styled from "styled-components";
+import ReviewSection from "../components/ReviewSection";
 
 const ShopDetail = () => {
   const { id } = useParams();
@@ -14,16 +14,18 @@ const ShopDetail = () => {
   useEffect(() => {
     const fetchListingDetails = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/listings/shops/${id}`);
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/listings/shops/${id}`
+        );
         if (!response.ok) {
-          throw new Error('Failed to fetch listing details');
+          throw new Error("Failed to fetch listing details");
         }
         const data = await response.json();
         if (data.success) {
           setListing(data.listing);
         }
       } catch (error) {
-        console.error('Error fetching listing details:', error);
+        console.error("Error fetching listing details:", error);
       } finally {
         setLoading(false);
       }
@@ -42,15 +44,17 @@ const ShopDetail = () => {
       return null;
     }
 
-    if (imagePath.startsWith('http')) {
+    if (imagePath.startsWith("http")) {
       return imagePath;
     }
 
     // Clean up the path
     const cleanPath = imagePath
-      .split('\\').pop() // Remove Windows-style path
-      .split('/').pop(); // Get just the filename
-    
+      .split("\\")
+      .pop() // Remove Windows-style path
+      .split("/")
+      .pop(); // Get just the filename
+
     // Ensure we're using the correct path format
     return `${process.env.REACT_APP_API_URL}/uploads/listings/${cleanPath}`;
   };
@@ -62,76 +66,88 @@ const ShopDetail = () => {
   if (loading) return <div>Loading...</div>;
   if (!listing) return <div>Listing not found</div>;
 
-  const ContactDialog = ({ onClose }) => (
-    <DialogOverlay onClick={onClose}>
-      <DialogContent onClick={e => e.stopPropagation()}>
-        <DialogHeader>
-          <DialogTitle>Contact Details</DialogTitle>
-          <CloseButton onClick={onClose}>&times;</CloseButton>
-        </DialogHeader>
-        
-        <DialogBody>
-          <ContactSection>
-            <ContactTitle>Owner Information</ContactTitle>
-            <ContactInfo>
-              <InfoItem>
-                <Label>Name:</Label>
-                <Value>{listing.owner?.name}</Value>
-              </InfoItem>
-              <InfoItem>
-                <Label>Email:</Label>
-                <Value>{listing.owner?.email}</Value>
-              </InfoItem>
-              <InfoItem>
-                <Label>Phone:</Label>
-                <Value>{listing.owner?.phone || 'Not provided'}</Value>
-              </InfoItem>
-            </ContactInfo>
-          </ContactSection>
+  const ContactDialog = ({ onClose }) => {
+    const handleWhatsAppClick = () => {
+      const phoneNumber = listing?.owner?.phone || "7385618460";
+      const message = encodeURIComponent(
+        "Hi, I'm interested in your listing on Campus Compass. Could you please share more details?"
+      );
+      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+      window.open(whatsappUrl, "_blank");
+    };
 
-          <ContactSection>
-            <ContactTitle>Shop Address</ContactTitle>
-            <ContactInfo>
-              <InfoItem>
-                <Label>Location:</Label>
-                <Value>{listing.location}</Value>
-              </InfoItem>
-            </ContactInfo>
-          </ContactSection>
-        </DialogBody>
-      </DialogContent>
-    </DialogOverlay>
-  );
+    return (
+      <DialogOverlay onClick={onClose}>
+        <DialogContent onClick={(e) => e.stopPropagation()}>
+          <DialogHeader>
+            <DialogTitle>Contact Details</DialogTitle>
+            <CloseButton onClick={onClose}>&times;</CloseButton>
+          </DialogHeader>
+
+          <DialogBody>
+            <ContactSection>
+              <ContactTitle>Owner Information</ContactTitle>
+              <ContactInfo>
+                <InfoItem>
+                  <Label>Name:</Label>
+                  <Value>{listing?.owner?.name || "Not available"}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Label>Email:</Label>
+                  <Value>{listing?.owner?.email || "Not available"}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Label>Phone:</Label>
+                  <Value>{listing?.owner?.phone || "7385618460"}</Value>
+                </InfoItem>
+              </ContactInfo>
+              <ContactTitle>Shop Address</ContactTitle>
+              <ContactInfo>
+                <InfoItem>
+                  <Label>Location:</Label>
+                  <Value>{listing?.location || "Not available"}</Value>
+                </InfoItem>
+              </ContactInfo>
+              <WhatsAppButton onClick={handleWhatsAppClick}>
+                <WhatsAppIcon>💬</WhatsAppIcon>
+                Chat with Owner
+              </WhatsAppButton>
+            </ContactSection>
+          </DialogBody>
+        </DialogContent>
+      </DialogOverlay>
+    );
+  };
 
   return (
     <PageContainer>
       <ContentWrapper>
         <ImageSection>
           <MainImage>
-            <img 
+            <img
               src={getImageUrl(listing?.images?.[currentImageIndex])}
-              alt={listing?.title || 'Shop image'}
+              alt={listing?.title || "Shop image"}
               onLoad={handleImageLoad}
               onError={(e) => {
-                console.error('Image failed to load:', e.target.src);
+                console.error("Image failed to load:", e.target.src);
                 setImageLoading(false);
               }}
-              style={{ display: imageLoading ? 'none' : 'block' }}
+              style={{ display: imageLoading ? "none" : "block" }}
               crossOrigin="anonymous"
             />
           </MainImage>
           <ThumbnailContainer>
             {listing?.images?.map((image, index) => (
-              <Thumbnail 
+              <Thumbnail
                 key={index}
                 onClick={() => handleImageChange(index)}
                 active={currentImageIndex === index}
               >
-                <img 
+                <img
                   src={getImageUrl(image)}
                   alt={`${listing.title} - Thumbnail ${index + 1}`}
                   onError={(e) => {
-                    console.error('Thumbnail failed to load:', e.target.src);
+                    console.error("Thumbnail failed to load:", e.target.src);
                   }}
                   crossOrigin="anonymous"
                 />
@@ -181,7 +197,7 @@ const ContentWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
-  
+
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
@@ -198,7 +214,7 @@ const MainImage = styled.div`
   height: 400px;
   border-radius: 8px;
   overflow: hidden;
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -219,8 +235,8 @@ const Thumbnail = styled.div`
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
-  border: 2px solid ${props => props.active ? '#4B49AC' : 'transparent'};
-  
+  border: 2px solid ${(props) => (props.active ? "#4B49AC" : "transparent")};
+
   img {
     width: 100%;
     height: 100%;
@@ -249,7 +265,7 @@ const Location = styled.p`
 const ShopType = styled.p`
   font-size: 1.25rem;
   font-weight: bold;
-  color: #4B49AC;
+  color: #4b49ac;
   text-transform: capitalize;
 `;
 
@@ -269,14 +285,14 @@ const Description = styled.p`
 `;
 
 const ContactButton = styled.button`
-  background: #4B49AC;
+  background: #4b49ac;
   color: white;
   padding: 0.8rem 1.5rem;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
-  
+
   &:hover {
     background: #3f3e8f;
   }
@@ -322,7 +338,7 @@ const CloseButton = styled.button`
   font-size: 1.5rem;
   cursor: pointer;
   color: #666;
-  
+
   &:hover {
     color: #333;
   }
@@ -364,4 +380,27 @@ const Value = styled.span`
   color: #333;
 `;
 
-export default ShopDetail; 
+const WhatsAppButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #25d366;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background: #128c7e;
+  }
+`;
+
+const WhatsAppIcon = styled.span`
+  font-size: 1.2rem;
+`;
+
+export default ShopDetail;
