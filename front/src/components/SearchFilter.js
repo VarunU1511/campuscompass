@@ -1,55 +1,38 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const SearchFilter = ({ filters, setFilters }) => {
+const SearchFilter = ({ filters, onChange }) => {
+  const handleChange = (field, value) => {
+    // Create a new filters object with the updated field
+    const newFilters = { ...filters, [field]: value };
+    
+    // Call the onChange handler with the new filters
+    onChange(newFilters);
+  };
+
   return (
     <FilterContainer>
       <FilterGroup>
         <label>Location:</label>
         <input
           type="text"
-          value={filters.location}
-          onChange={(e) => setFilters({ ...filters, location: e.target.value })}
+          value={filters.location || ''}
+          onChange={(e) => handleChange('location', e.target.value)}
           placeholder="Enter location"
         />
       </FilterGroup>
-
+      
       <FilterGroup>
-        <label>Price Range:</label>
+        <label>Listing Type:</label>
         <select
-          value={filters.priceRange}
-          onChange={(e) => setFilters({ ...filters, priceRange: e.target.value })}
-        >
-          <option value="">All Prices</option>
-          <option value="0-5000">₹0 - ₹5,000</option>
-          <option value="5000-10000">₹5,000 - ₹10,000</option>
-          <option value="10000-15000">₹10,000 - ₹15,000</option>
-          <option value="15000+">₹15,000+</option>
-        </select>
-      </FilterGroup>
-
-      <FilterGroup>
-        <label>Room Type:</label>
-        <select
-          value={filters.roomType}
-          onChange={(e) => setFilters({ ...filters, roomType: e.target.value })}
+          value={filters.listingType || ''}
+          onChange={(e) => handleChange('listingType', e.target.value)}
         >
           <option value="">All Types</option>
-          <option value="single">Single</option>
-          <option value="double">Double</option>
-          <option value="triple">Triple</option>
-        </select>
-      </FilterGroup>
-
-      <FilterGroup>
-        <label>Sort By:</label>
-        <select
-          value={filters.sortBy}
-          onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
-        >
-          <option value="price_asc">Price: Low to High</option>
-          <option value="price_desc">Price: High to Low</option>
-          <option value="rating">Rating</option>
+          <option value="accommodation">Accommodation</option>
+          <option value="restaurant">Restaurants</option>
+          <option value="shop">Shops</option>
+          <option value="mess">Mess</option>
         </select>
       </FilterGroup>
     </FilterContainer>
@@ -89,4 +72,4 @@ const FilterGroup = styled.div`
   }
 `;
 
-export default SearchFilter; 
+export default SearchFilter;

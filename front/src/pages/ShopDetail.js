@@ -188,9 +188,15 @@ const ShopDetail = () => {
 
 // Styled Components (matching PGDetails.js styling)
 const PageContainer = styled.div`
-  padding: 2rem;
+  padding: 2.5rem 1.5rem 3.5rem 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
+  background: linear-gradient(
+    135deg,
+    rgba(244, 244, 250, 0.97) 0%,
+    rgba(225, 225, 253, 0.71) 100%
+  );
+  border-radius: 40px;
 `;
 
 const ContentWrapper = styled.div`
@@ -207,12 +213,13 @@ const ImageSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-bottom: 2rem;
 `;
 
 const MainImage = styled.div`
   width: 100%;
   height: 400px;
-  border-radius: 8px;
+  border-radius: 20px;
   overflow: hidden;
 
   img {
@@ -232,7 +239,7 @@ const ThumbnailContainer = styled.div`
 const Thumbnail = styled.div`
   width: 80px;
   height: 80px;
-  border-radius: 4px;
+  border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
   border: 2px solid ${(props) => (props.active ? "#4B49AC" : "transparent")};
@@ -244,22 +251,29 @@ const Thumbnail = styled.div`
   }
 `;
 
-// Add these styled components after the existing ones
 const DetailsSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 `;
 
 const Title = styled.h1`
-  font-size: 2rem;
+  font-size: 2.2rem;
   color: #333;
-  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 `;
 
 const Location = styled.p`
   font-size: 1.1rem;
   color: #666;
+  font-family: "Open Sans", sans-serif;
 `;
 
 const ShopType = styled.p`
@@ -267,6 +281,7 @@ const ShopType = styled.p`
   font-weight: bold;
   color: #4b49ac;
   text-transform: capitalize;
+  font-family: "Montserrat", sans-serif;
 `;
 
 const Section = styled.div`
@@ -277,24 +292,39 @@ const SectionTitle = styled.h2`
   font-size: 1.2rem;
   color: #333;
   margin-bottom: 0.5rem;
+  font-family: "Montserrat", sans-serif;
 `;
 
 const Description = styled.p`
   color: #666;
   line-height: 1.6;
+  font-size: 1.1rem;
+  font-family: "Open Sans", sans-serif;
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 `;
 
 const ContactButton = styled.button`
   background: #4b49ac;
   color: white;
-  padding: 0.8rem 1.5rem;
+  padding: 1rem 2rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 50px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: "Montserrat", sans-serif;
+  margin-top: 1rem;
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
 
   &:hover {
     background: #3f3e8f;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(75, 73, 172, 0.18);
   }
 `;
 

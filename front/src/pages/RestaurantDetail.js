@@ -182,6 +182,7 @@ const RestaurantDetail = () => {
             <ContactDialog onClose={() => setShowContactDialog(false)} />
           )}
         </DetailsSection>
+        {/* Place ReviewSection directly, do not wrap in extra card */}
         <ReviewSection listingId={listing._id} ownerId={listing.owner?._id} />
       </PageContainer>
     </ErrorBoundary>
@@ -190,9 +191,15 @@ const RestaurantDetail = () => {
 
 // Styled Components (matching PGDetails.js styling)
 const PageContainer = styled.div`
-  padding: 2rem;
+  padding: 2.5rem 1.5rem 3.5rem 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
+  background: linear-gradient(
+    135deg,
+    rgba(244, 244, 250, 0.97) 0%,
+    rgba(225, 225, 253, 0.71) 100%
+  );
+  border-radius: 40px;
 `;
 
 const ImageSection = styled.div`
@@ -204,7 +211,7 @@ const MainImage = styled.div`
   width: 100%;
   height: 400px;
   margin-bottom: 1rem;
-  border-radius: 8px;
+  border-radius: 20px;
   overflow: hidden;
   background-color: #f5f5f5;
 
@@ -225,7 +232,7 @@ const ThumbnailContainer = styled.div`
 const Thumbnail = styled.div`
   width: 100px;
   height: 100px;
-  border-radius: 4px;
+  border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
   border: 2px solid ${(props) => (props.active ? "#4B49AC" : "transparent")};
@@ -239,46 +246,73 @@ const Thumbnail = styled.div`
 
 const DetailsSection = styled.div`
   margin-bottom: 2rem;
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 `;
 
 const Title = styled.h1`
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   color: #333;
-  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 `;
 
 const Location = styled.p`
   font-size: 1.1rem;
   color: #666;
   margin-bottom: 1rem;
+  font-family: "Open Sans", sans-serif;
 `;
 
 const Cuisine = styled.span`
   font-size: 1.1rem;
   color: #666;
   margin-right: 1rem;
+  font-family: "Open Sans", sans-serif;
 `;
 
 const Price = styled.span`
   font-size: 1.1rem;
-  color: #666;
+  color: #4b49ac;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
 `;
 
 const Description = styled.p`
   color: #666;
   line-height: 1.6;
   font-size: 1.1rem;
+  font-family: "Open Sans", sans-serif;
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 `;
 
 const ContactButton = styled.button`
   background-color: #4b49ac;
   color: #fff;
-  padding: 0.75rem 1rem;
+  padding: 1rem 2rem;
   border: none;
-  border-radius: 4px;
-  font-size: 1rem;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
+  font-family: "Montserrat", sans-serif;
   margin-top: 1rem;
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+
+  &:hover {
+    background: #3f3e8f;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(75, 73, 172, 0.18);
+  }
 `;
 
 // Dialog styled components
@@ -298,9 +332,10 @@ const DialogOverlay = styled.div`
 const DialogContent = styled.div`
   background: white;
   padding: 2rem;
-  border-radius: 8px;
+  border-radius: 20px;
   width: 90%;
   max-width: 500px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 `;
 
 const DialogHeader = styled.div`
@@ -308,11 +343,16 @@ const DialogHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 1rem;
 `;
 
 const DialogTitle = styled.h2`
   margin: 0;
   color: #333;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem;
 `;
 
 const CloseButton = styled.button`
@@ -321,6 +361,7 @@ const CloseButton = styled.button`
   font-size: 1.5rem;
   cursor: pointer;
   color: #666;
+  transition: color 0.2s ease;
 
   &:hover {
     color: #333;
@@ -334,33 +375,74 @@ const DialogBody = styled.div`
 `;
 
 const ContactSection = styled.div`
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 `;
 
 const ContactTitle = styled.h3`
   font-size: 1.1rem;
-  color: #333;
-  margin-bottom: 0.5rem;
+  color: #4b49ac;
+  margin-bottom: 1rem;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
 `;
 
 const ContactInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.8rem;
+  background: #f9f9ff;
+  padding: 1.2rem;
+  border-radius: 12px;
 `;
 
 const InfoItem = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
 `;
 
 const Label = styled.span`
-  font-weight: bold;
+  font-weight: 500;
   color: #666;
+  min-width: 80px;
+  font-family: "Open Sans", sans-serif;
 `;
 
 const Value = styled.span`
   color: #333;
+  font-family: "Open Sans", sans-serif;
+`;
+
+const WhatsAppButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  background: #25d366;
+  color: white;
+  padding: 0.9rem 1.5rem;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: "Montserrat", sans-serif;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 0.5rem;
+
+  &:hover {
+    background: #128c7e;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(18, 140, 126, 0.2);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+`;
+
+const WhatsAppIcon = styled.span`
+  font-size: 1.2rem;
 `;
 
 const LoadingSpinner = styled.div`
@@ -371,29 +453,6 @@ const LoadingSpinner = styled.div`
   width: 100%;
   background-color: #f5f5f5;
   color: #666;
-`;
-
-const WhatsAppButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #25d366;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-top: 1rem;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background: #128c7e;
-  }
-`;
-
-const WhatsAppIcon = styled.span`
-  font-size: 1.2rem;
 `;
 
 const RestaurantDetailPage = () => (

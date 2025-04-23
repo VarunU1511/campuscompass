@@ -185,15 +185,22 @@ const PGDetails = () => {
 
 // Styled Components
 const PageContainer = styled.div`
-  padding: 2rem;
+  padding: 2.5rem 1.5rem 3.5rem 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
+  background: linear-gradient(
+    135deg,
+    rgba(244, 244, 250, 0.97) 0%,
+    rgba(225, 225, 253, 0.71) 100%
+  );
+  border-radius: 40px;
 `;
 
 const ImageSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-bottom: 2rem;
 `;
 
 const MainImage = styled.div`
@@ -201,7 +208,7 @@ const MainImage = styled.div`
   width: 100%;
   height: 400px;
   margin-bottom: 1rem;
-  border-radius: 8px;
+  border-radius: 20px;
   overflow: hidden;
   background-color: #f5f5f5;
 
@@ -222,7 +229,7 @@ const ThumbnailContainer = styled.div`
 const Thumbnail = styled.div`
   width: 80px;
   height: 80px;
-  border-radius: 4px;
+  border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
   border: 2px solid ${(props) => (props.active ? "#4B49AC" : "transparent")};
@@ -234,20 +241,35 @@ const Thumbnail = styled.div`
   }
 `;
 
+const HeaderSection = styled.div`
+  margin-bottom: 2rem;
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+`;
+
 const Title = styled.h1`
-  font-size: 2rem;
+  font-size: 2.2rem;
   color: #333;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 `;
 
 const Location = styled.p`
   color: #666;
   font-size: 1.1rem;
+  font-family: "Open Sans", sans-serif;
 `;
 
 const Price = styled.div`
   font-size: 2rem;
   font-weight: bold;
   color: #4b49ac;
+  font-family: "Montserrat", sans-serif;
+  margin-bottom: 0.5rem;
 
   span {
     font-size: 1rem;
@@ -255,9 +277,43 @@ const Price = styled.div`
   }
 `;
 
+const RoomInfo = styled.p`
+  color: #666;
+  font-size: 1.1rem;
+  font-family: "Open Sans", sans-serif;
+`;
+
 const Description = styled.p`
   color: #666;
   line-height: 1.6;
+  font-size: 1.1rem;
+  font-family: "Open Sans", sans-serif;
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+`;
+
+const ContactButton = styled.button`
+  margin-top: 1rem;
+  padding: 1rem 2rem;
+  background: #4b49ac;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: "Montserrat", sans-serif;
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+
+  &:hover {
+    background: #3f3e8f;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(75, 73, 172, 0.18);
+  }
 `;
 
 const DialogOverlay = styled.div`
@@ -348,39 +404,6 @@ const Label = styled.span`
 
 const Value = styled.span`
   color: #333;
-`;
-
-// const Note = styled.p`
-//   color: #666;
-//   font-size: 0.9rem;
-//   text-align: center;
-//   margin-top: 1rem;
-//   font-style: italic;
-// `;
-
-const HeaderSection = styled.div`
-  margin-bottom: 2rem;
-`;
-
-const RoomInfo = styled.p`
-  color: #666;
-  font-size: 1.1rem;
-`;
-
-const ContactButton = styled.button`
-  margin-top: 1rem;
-  padding: 1rem 2rem;
-  background: #4b49ac;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
-
-  &:hover {
-    background: #3f3e8f;
-  }
 `;
 
 const LoadingMessage = styled.div`

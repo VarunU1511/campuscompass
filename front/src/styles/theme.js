@@ -2,21 +2,27 @@ import { breakpoints, devices, containerWidths } from './responsive';
 
 const theme = {
   colors: {
-    primary: '#007bff',
-    secondary: '#6c757d',
-    success: '#28a745',
-    danger: '#dc3545',
-    warning: '#ffc107',
-    info: '#17a2b8',
-    light: '#f8f9fa',
-    dark: '#343a40',
+    primary: '#4f46e5',
+    secondary: '#7c3aed',
+    accent: '#06b6d4',
+    success: '#10b981',
+    danger: '#ef4444',
+    warning: '#f59e0b',
+    info: '#3b82f6',
+    light: '#f8fafc',
+    dark: '#0f172a',
     white: '#ffffff',
-    background: '#f8f9fa',
-    text: '#333333',
-    border: '#dddddd'
+    background: '#f8fafc',
+    text: '#334155',
+    textLight: '#64748b',
+    border: '#e2e8f0',
+    cardBg: '#ffffff',
+    shadow: 'rgba(0, 0, 0, 0.1)',
+    highlight: '#ede9fe',
+    muted: '#f1f5f9'
   },
   typography: {
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     fontSize: {
       small: '0.875rem',
       base: '1rem',
@@ -27,6 +33,7 @@ const theme = {
     fontWeight: {
       normal: 400,
       medium: 500,
+      semibold: 600,
       bold: 700
     },
     lineHeight: {
@@ -46,14 +53,16 @@ const theme = {
   borderRadius: {
     small: '0.25rem',
     default: '0.5rem',
-    large: '1rem',
+    large: '0.75rem',
+    xl: '1rem',
     full: '9999px'
   },
   shadows: {
     small: '0 1px 3px rgba(0,0,0,0.12)',
-    default: '0 2px 4px rgba(0,0,0,0.1)',
-    large: '0 4px 6px rgba(0,0,0,0.1)',
-    xlarge: '0 8px 12px rgba(0,0,0,0.1)'
+    default: '0 2px 4px rgba(0,0,0,0.08)',
+    medium: '0 4px 6px rgba(0,0,0,0.1)',
+    large: '0 10px 15px -3px rgba(0,0,0,0.1)',
+    xl: '0 20px 25px -5px rgba(0,0,0,0.1)'
   },
   breakpoints,
   devices,
@@ -65,4 +74,4 @@ const theme = {
   }
 };
 
-export default theme; 
+export default theme;

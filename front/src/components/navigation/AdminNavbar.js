@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { useAuth } from '../../context/AuthContext';
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { useAuth } from "../../context/AuthContext";
 
 const AdminNavbar = () => {
   const { user, logout } = useAuth();
@@ -9,10 +9,10 @@ const AdminNavbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/admin/login');
+    navigate("/admin/login");
   };
 
-  if (!user || user.role !== 'admin') {
+  if (!user || user.role !== "admin") {
     return null;
   }
 
@@ -30,18 +30,30 @@ const AdminNavbar = () => {
 };
 
 const Nav = styled.nav`
-  background: #4B49AC;
-  padding: 1rem 2rem;
+  background: #2d2c54;
+  padding: 1.2rem 2.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 40px 40px 40px 40px;
+  top: 0;
+  z-index: 100;
+  font-family: "Montserrat", sans-serif;
 `;
 
 const NavBrand = styled(Link)`
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
 `;
 
 const NavLinks = styled.div`
@@ -54,27 +66,54 @@ const NavLink = styled(Link)`
   color: white;
   text-decoration: none;
   padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: background 0.3s;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: white;
+    transition: width 0.3s ease;
+  }
 
   &:hover {
     background: rgba(255, 255, 255, 0.1);
+
+    &:after {
+      width: 100%;
+    }
   }
 `;
 
 const LogoutButton = styled.button`
-  background: transparent;
-  border: 1px solid white;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 1rem;
+  font-family: "Montserrat", sans-serif;
 
   &:hover {
     background: white;
-    color: #4B49AC;
+    color: #2d2c54;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;
 
-export default AdminNavbar; 
+export default AdminNavbar;

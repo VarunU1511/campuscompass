@@ -68,8 +68,8 @@ const Accommodations = () => {
   return (
     <PageContainer>
       <Header>
-        <Title>Student Accommodations</Title>
-        <Subtitle>Find comfortable PG accommodations near your campus</Subtitle>
+        <SectionTitle>Student Accommodations</SectionTitle>
+        <SectionSubtitle>Find comfortable PG accommodations near your campus</SectionSubtitle>
       </Header>
 
       {/* Existing listings grid */}
@@ -79,26 +79,36 @@ const Accommodations = () => {
         <ListingsGrid>
           {listings.map((listing) => (
             <ListingCard key={listing._id}>
-              <ListingImage 
-                src={getImageUrl(listing)}
-                alt={listing.title}
-                onError={(e) => {
-                  console.error('Image failed to load:', e.target.src);
-                }}
-                crossOrigin="anonymous"
-              />
+              <ListingImageWrapper>
+                <ListingImage 
+                  src={getImageUrl(listing)}
+                  alt={listing.title}
+                  onError={(e) => {
+                    console.error('Image failed to load:', e.target.src);
+                  }}
+                  crossOrigin="anonymous"
+                />
+              </ListingImageWrapper>
               <ListingContent>
-                <ListingTitle>{listing.title}</ListingTitle>
-                <ListingLocation>📍 {listing.location}</ListingLocation>
-                <ListingPrice>₹{listing.price} <span>/month</span></ListingPrice>
+                <ListingHeader>
+                  <ListingTitle>{listing.title}</ListingTitle>
+                  <PriceTag>₹{listing.price} <span>/month</span></PriceTag>
+                </ListingHeader>
+                <ListingLocation>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4B49AC" strokeWidth="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  {listing.location}
+                </ListingLocation>
                 <ListingDetails>
                   <Detail>Room Type: {listing.roomType}</Detail>
                   <Detail>Available Rooms: {listing.availableRooms}</Detail>
                 </ListingDetails>
                 
-                <ViewButton onClick={() => navigate(`/pg/${listing._id}`)}>
+                <ViewDetailsButton onClick={() => navigate(`/pg/${listing._id}`)}>
                   View Details
-                </ViewButton>
+                </ViewDetailsButton>
               </ListingContent>
             </ListingCard>
           ))}
@@ -110,99 +120,206 @@ const Accommodations = () => {
 
 // Styled Components
 const PageContainer = styled.div`
-  padding: 2rem;
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 20px;
 `;
 
 const Header = styled.div`
   text-align: center;
-  margin-bottom: 2rem;
+  margin: 3rem 0 4rem;
 `;
 
-const Title = styled.h1`
-  font-size: 2rem;
+const SectionTitle = styled.h1`
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 1.2rem;
   color: #333;
-  margin-bottom: 0.5rem;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: #4b49ac;
+    border-radius: 10px;
+  }
 `;
 
-const Subtitle = styled.p`
+const SectionSubtitle = styled.p`
+  text-align: center;
   color: #666;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: "Open Sans", sans-serif;
+  line-height: 1.6;
 `;
 
 const ListingsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2.5rem;
+  margin-bottom: 4rem;
 `;
 
 const ListingCard = styled.div`
   background: white;
-  border-radius: 8px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 
   &:hover {
-    transform: translateY(-5px);
+    transform: translateY(-15px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border-color: #4b49ac;
+  }
+`;
+
+const ListingImageWrapper = styled.div`
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  ${ListingCard}:hover &::after {
+    opacity: 1;
   }
 `;
 
 const ListingImage = styled.img`
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
+  transition: transform 0.6s ease;
+
+  ${ListingCard}:hover & {
+    transform: scale(1.1);
+  }
 `;
 
 const ListingContent = styled.div`
-  padding: 1rem;
+  padding: 1.8rem;
+`;
+
+const ListingHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
 `;
 
 const ListingTitle = styled.h2`
-  font-size: 1.25rem;
+  font-size: 1.3rem;
+  font-weight: 600;
   color: #333;
-  margin-bottom: 0.5rem;
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
 `;
 
-const ListingLocation = styled.p`
-  color: #666;
-  margin-bottom: 0.5rem;
-`;
-
-const ListingPrice = styled.p`
+const PriceTag = styled.p`
   font-size: 1.25rem;
   font-weight: bold;
   color: #4B49AC;
-  margin-bottom: 0.5rem;
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
 
   span {
     font-size: 0.9rem;
     color: #666;
+    font-weight: normal;
+  }
+`;
+
+const ListingLocation = styled.div`
+  display: flex;
+  align-items: center;
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1.2rem;
+  font-family: "Open Sans", sans-serif;
+
+  svg {
+    margin-right: 8px;
   }
 `;
 
 const ListingDetails = styled.div`
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  font-family: "Open Sans", sans-serif;
 `;
 
 const Detail = styled.p`
   color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
 `;
 
-const ViewButton = styled.button`
+const ViewDetailsButton = styled.button`
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.9rem 1.8rem;
   background: #4B49AC;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 50px;
   cursor: pointer;
   font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-family: "Montserrat", sans-serif;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: width 0.3s ease;
+    z-index: -1;
+  }
   
   &:hover {
     background: #3f3e8f;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(75, 73, 172, 0.3);
+    
+    &::before {
+      width: 100%;
+    }
+  }
+  
+  &:active {
+    transform: translateY(0);
   }
 `;
 
@@ -216,42 +333,15 @@ const LoadingContainer = styled.div`
 const LoadingText = styled.p`
   font-size: 1.2rem;
   color: #666;
+  font-family: "Montserrat", sans-serif;
 `;
 
 const NoListings = styled.div`
   text-align: center;
-  padding: 3rem;
+  padding: 5rem 0;
   color: #666;
   font-size: 1.2rem;
+  font-family: "Open Sans", sans-serif;
 `;
 
-const MapSection = styled.div`
-  margin: 20px 0;
-  padding: 20px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-`;
-
-const SectionTitle = styled.h2`
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-  color: #333;
-`;
-
-const LocationButton = styled.button`
-  width: 100%;
-  padding: 0.75rem;
-  background: #fff;
-  color: #4B49AC;
-  border: 1px solid #4B49AC;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-bottom: 0.5rem;
-  
-  &:hover {
-    background: #f5f5f5;
-  }
-`;
-
-export default Accommodations; 
+export default Accommodations;
