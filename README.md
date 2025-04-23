@@ -3,6 +3,9 @@
 
 A web application for students to find and book PG accommodations near their campus.
 
+For Preview:
+**https://youtu.be/TVPIA4Zi9_4**
+
 ## Features
 
 - User Authentication (Student/Owner)
