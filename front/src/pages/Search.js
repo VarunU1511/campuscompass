@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import SearchFilter from "../components/SearchFilter";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import config from "../config/config";
@@ -63,15 +62,6 @@ const SearchResults = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-`;
-
-const FiltersSection = styled.div`
-  margin-bottom: 2.5rem;
-  background: white;
-  border-radius: 20px;
-  padding: 1.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.05);
 `;
 
 const ResultsGrid = styled.div`
@@ -146,31 +136,6 @@ const ViewButton = styled.button`
   }
 `;
 
-const Pagination = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 2.5rem;
-  gap: 0.5rem;
-`;
-
-const PageButton = styled.button`
-  background-color: ${(props) => (props.active ? "#4b49ac" : "white")};
-  color: ${(props) => (props.active ? "white" : "#666")};
-  border: 1px solid ${(props) => (props.active ? "#4b49ac" : "#e0e0e0")};
-  padding: 0.6rem 1.2rem;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: "Montserrat", sans-serif;
-  font-weight: 600;
-
-  &:hover {
-    background-color: ${(props) => (props.active ? "#3f3e8f" : "#f5f5f5")};
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  }
-`;
-
 const ErrorMessage = styled.div`
   text-align: center;
   padding: 2rem;
@@ -186,8 +151,6 @@ const Search = () => {
   const [originalResults, setOriginalResults] = useState([]); // Store original results
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [filters, setFilters] = useState({
     location: "",
     listingType: "",

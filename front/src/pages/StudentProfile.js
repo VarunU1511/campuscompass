@@ -204,45 +204,6 @@ const Logo = styled.div`
   justify-content: center;
 `;
 
-const ProfileImageSection = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-bottom: 2rem;
-`;
-
-const ProfileImage = styled.div`
-  position: relative;
-  width: 120px;
-  height: 120px;
-
-  img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid #f0f0ff;
-    box-shadow: 0 4px 16px rgba(75, 73, 172, 0.07);
-  }
-`;
-
-const UploadButton = styled.div`
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  background: #4b49ac;
-  color: white;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border: 2px solid #fff;
-  font-size: 1.2rem;
-  box-shadow: 0 2px 8px rgba(75, 73, 172, 0.08);
-`;
-
 const FormSection = styled.div`
   display: flex;
   flex-direction: column;
