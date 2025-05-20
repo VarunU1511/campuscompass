@@ -2,7 +2,14 @@
 
 A full-stack web application for campus accommodation and services.
 
+<<<<<<< HEAD
 ## Project Goals
+=======
+For Preview:
+**https://youtu.be/TVPIA4Zi9_4**
+
+## Features
+>>>>>>> origin/main
 
 Campus Compass is designed to help students find and book accommodations, mess facilities, and restaurants near their campus. The platform connects students with service providers, streamlining the process of finding and securing essential services during their academic journey.
 
