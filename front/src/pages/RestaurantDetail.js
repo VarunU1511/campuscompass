@@ -10,7 +10,9 @@ const RestaurantDetail = () => {
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showContactDialog, setShowContactDialog] = useState(false);
-  const [error, setError] = useState(null);
+  // Either use the 'error' variable or remove it
+  // const [error, setError] = useState(null);
+  const [, setError] = useState(null);
   const [imageLoading, setImageLoading] = useState(true);
 
   useEffect(() => {

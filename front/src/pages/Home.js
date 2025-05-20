@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
-import CategoryIcon from "../components/common/CategoryIcon";
+// Remove the unused 'CategoryIcon' import
+// import CategoryIcon from '../components/CategoryIcon';
 import { useAuth } from "../context/AuthContext";
 import AdminNavbar from "../components/navigation/AdminNavbar";
 import axios from "axios";

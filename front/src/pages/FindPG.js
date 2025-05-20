@@ -6,7 +6,8 @@ import config from '../config/config';
 const FindPG = () => {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  // Remove the unused 'navigate' variable
+  // const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAllListings = async () => {

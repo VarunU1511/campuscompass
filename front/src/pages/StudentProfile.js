@@ -296,4 +296,8 @@ const SaveButton = styled.button`
   }
 `;
 
+// Remove or use these styled components
+// const ProfileImageSection = styled.div`...`;
+// const ProfileImage = styled.img`...`;
+// const UploadButton = styled.button`...`;
 export default StudentProfile;

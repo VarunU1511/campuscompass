@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+// Remove the unused 'useAuth' import
+// import { useAuth } from '../context/AuthContext';
 import authService from '../services/authService';
 
 const Register = ({ userType }) => {

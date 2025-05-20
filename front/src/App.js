@@ -22,8 +22,9 @@ import StudentDashboard from './pages/StudentDashboard';
 import PGDetails from './pages/PGDetails';
 import FindPG from './pages/FindPG';
 import ListingForm from './pages/ListingForm';
-import Documentation from './components/Documentation';
-import Profile from './pages/Profile';
+// Remove or comment out the unused imports
+// import Documentation from './pages/Documentation';
+// import Profile from './pages/Profile';
 import AccountType from './pages/AccountType';
 import StudentProfile from './pages/StudentProfile';
 import OwnerProfile from './pages/OwnerProfile';
