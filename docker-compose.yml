@@ -23,9 +23,9 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
     ports:
-      - "80:80"
+      - "3000:80"  # Changed from "80:80" to avoid conflicts
     volumes:
-      - ./campuscompass/front:/app
+      - ./campuscompass/front:/app/src  # More specific volume mapping
       - /app/node_modules
     depends_on:
       - backend
@@ -39,6 +39,8 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=campuscompass
     restart: unless-stopped
 
 volumes:

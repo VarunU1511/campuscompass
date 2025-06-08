@@ -3,9 +3,14 @@ output "alb_dns_name" {
   value       = aws_lb.campus_compass_alb.dns_name
 }
 
-output "db_endpoint" {
-  description = "Endpoint of the DocumentDB cluster"
-  value       = aws_docdb_cluster.campus_compass_db.endpoint
+output "instance_public_ip" {
+  description = "Public IP address of the EC2 instance"
+  value       = aws_instance.campus_compass_instance.public_ip
+}
+
+output "instance_public_dns" {
+  description = "Public DNS name of the EC2 instance"
+  value       = aws_instance.campus_compass_instance.public_dns
 }
 
 output "s3_bucket_name" {
@@ -16,4 +21,14 @@ output "s3_bucket_name" {
 output "s3_bucket_domain_name" {
   description = "Domain name of the S3 bucket for static assets"
   value       = aws_s3_bucket.static_assets.bucket_domain_name
+}
+
+output "vpc_id" {
+  description = "ID of the VPC"
+  value       = aws_vpc.campus_compass_vpc.id
+}
+
+output "public_subnet_ids" {
+  description = "IDs of the public subnets"
+  value       = aws_subnet.public_subnets[*].id
 }

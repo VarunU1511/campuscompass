@@ -47,28 +47,7 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-# Elastic IP for NAT Gateway
-resource "aws_eip" "nat_eip" {
-  domain = "vpc"
-  depends_on = [aws_internet_gateway.igw]
-
-  tags = {
-    Name = "campus-compass-nat-eip"
-  }
-}
-
-# NAT Gateway
-resource "aws_nat_gateway" "nat_gateway" {
-  allocation_id = aws_eip.nat_eip.id
-  subnet_id     = aws_subnet.public_subnets[0].id
-  depends_on    = [aws_internet_gateway.igw]
-
-  tags = {
-    Name = "campus-compass-nat-gateway"
-  }
-}
-
-# Route Tables
+# Route Tables for Public Subnets (removed NAT Gateway to save costs)
 resource "aws_route_table" "public_route_table" {
   vpc_id = aws_vpc.campus_compass_vpc.id
 
@@ -82,30 +61,11 @@ resource "aws_route_table" "public_route_table" {
   }
 }
 
-resource "aws_route_table" "private_route_table" {
-  vpc_id = aws_vpc.campus_compass_vpc.id
-
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat_gateway.id
-  }
-
-  tags = {
-    Name = "campus-compass-private-route-table"
-  }
-}
-
-# Route Table Associations
+# Route Table Associations for Public Subnets
 resource "aws_route_table_association" "public_subnet_association" {
   count          = length(var.public_subnet_cidrs)
   subnet_id      = aws_subnet.public_subnets[count.index].id
   route_table_id = aws_route_table.public_route_table.id
-}
-
-resource "aws_route_table_association" "private_subnet_association" {
-  count          = length(var.private_subnet_cidrs)
-  subnet_id      = aws_subnet.private_subnets[count.index].id
-  route_table_id = aws_route_table.private_route_table.id
 }
 
 # Security Groups
@@ -159,6 +119,14 @@ resource "aws_security_group" "ec2_sg" {
     security_groups = [aws_security_group.alb_sg.id]
   }
 
+  # SSH access for debugging (optional)
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -168,30 +136,6 @@ resource "aws_security_group" "ec2_sg" {
 
   tags = {
     Name = "campus-compass-ec2-sg"
-  }
-}
-
-resource "aws_security_group" "rds_sg" {
-  name        = "campus-compass-rds-sg"
-  description = "Security group for RDS"
-  vpc_id      = aws_vpc.campus_compass_vpc.id
-
-  ingress {
-    from_port       = 27017
-    to_port         = 27017
-    protocol        = "tcp"
-    security_groups = [aws_security_group.ec2_sg.id]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "campus-compass-rds-sg"
   }
 }
 
@@ -219,11 +163,15 @@ resource "aws_lb_target_group" "frontend_tg" {
   health_check {
     path                = "/"
     port                = "traffic-port"
-    healthy_threshold   = 3
-    unhealthy_threshold = 3
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
     timeout             = 5
     interval            = 30
     matcher             = "200-299"
+  }
+
+  tags = {
+    Name = "campus-compass-frontend-tg"
   }
 }
 
@@ -236,11 +184,15 @@ resource "aws_lb_target_group" "backend_tg" {
   health_check {
     path                = "/api/health"
     port                = "traffic-port"
-    healthy_threshold   = 3
-    unhealthy_threshold = 3
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
     timeout             = 5
     interval            = 30
     matcher             = "200-299"
+  }
+
+  tags = {
+    Name = "campus-compass-backend-tg"
   }
 }
 
@@ -286,13 +238,13 @@ resource "aws_launch_template" "campus_compass_lt" {
   user_data = base64encode(templatefile("${path.module}/scripts/user_data.sh", {
     frontend_image = var.frontend_image
     backend_image  = var.backend_image
-    mongo_uri      = aws_docdb_cluster.campus_compass_db.endpoint
+    mongo_uri      = "mongodb://localhost:27017/campus_compass"
   }))
 
   block_device_mappings {
     device_name = "/dev/sda1"
     ebs {
-      volume_size           = 20
+      volume_size           = 8  # Reduced to minimum
       volume_type           = "gp3"
       delete_on_termination = true
     }
@@ -306,32 +258,31 @@ resource "aws_launch_template" "campus_compass_lt" {
   }
 }
 
-# Auto Scaling Group
-resource "aws_autoscaling_group" "campus_compass_asg" {
-  name                = "campus-compass-asg"
-  min_size            = var.min_size
-  max_size            = var.max_size
-  desired_capacity    = var.desired_capacity
-  vpc_zone_identifier = [for subnet in aws_subnet.private_subnets : subnet.id]
-
+# Single EC2 Instance (instead of Auto Scaling Group)
+resource "aws_instance" "campus_compass_instance" {
   launch_template {
     id      = aws_launch_template.campus_compass_lt.id
     version = "$Latest"
   }
 
-  target_group_arns = [
-    aws_lb_target_group.frontend_tg.arn,
-    aws_lb_target_group.backend_tg.arn
-  ]
+  subnet_id = aws_subnet.public_subnets[0].id
 
-  health_check_type         = "ELB"
-  health_check_grace_period = 300
-
-  tag {
-    key                 = "Name"
-    value               = "campus-compass-instance"
-    propagate_at_launch = true
+  tags = {
+    Name = "campus-compass-instance"
   }
+}
+
+# Target Group Attachments
+resource "aws_lb_target_group_attachment" "frontend_attachment" {
+  target_group_arn = aws_lb_target_group.frontend_tg.arn
+  target_id        = aws_instance.campus_compass_instance.id
+  port             = 80
+}
+
+resource "aws_lb_target_group_attachment" "backend_attachment" {
+  target_group_arn = aws_lb_target_group.backend_tg.arn
+  target_id        = aws_instance.campus_compass_instance.id
+  port             = 5000
 }
 
 # IAM Role for EC2
@@ -354,49 +305,12 @@ resource "aws_iam_role" "ec2_role" {
 
 resource "aws_iam_role_policy_attachment" "ec2_policy_attachment" {
   role       = aws_iam_role.ec2_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = "campus-compass-ec2-profile"
   role = aws_iam_role.ec2_role.name
-}
-
-# DocumentDB (MongoDB compatible)
-resource "aws_docdb_subnet_group" "campus_compass_db_subnet_group" {
-  name       = "campus-compass-db-subnet-group"
-  subnet_ids = [for subnet in aws_subnet.private_subnets : subnet.id]
-
-  tags = {
-    Name = "campus-compass-db-subnet-group"
-  }
-}
-
-resource "aws_docdb_cluster" "campus_compass_db" {
-  cluster_identifier      = "campus-compass-db-cluster"
-  engine                  = "docdb"
-  master_username         = var.db_username
-  master_password         = var.db_password
-  backup_retention_period = 5
-  preferred_backup_window = "07:00-09:00"
-  skip_final_snapshot     = true
-  db_subnet_group_name    = aws_docdb_subnet_group.campus_compass_db_subnet_group.name
-  vpc_security_group_ids  = [aws_security_group.rds_sg.id]
-
-  tags = {
-    Name = "campus-compass-db-cluster"
-  }
-}
-
-resource "aws_docdb_cluster_instance" "campus_compass_db_instances" {
-  count              = 1
-  identifier         = "campus-compass-db-instance-${count.index}"
-  cluster_identifier = aws_docdb_cluster.campus_compass_db.id
-  instance_class     = "db.t3.medium"
-
-  tags = {
-    Name = "campus-compass-db-instance-${count.index}"
-  }
 }
 
 # S3 Bucket for Static Assets

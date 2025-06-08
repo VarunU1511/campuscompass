@@ -29,33 +29,15 @@ variable "availability_zones" {
 }
 
 variable "ami_id" {
-  description = "AMI ID for EC2 instances"
+  description = "AMI ID for EC2 instances (Amazon Linux 2023)"
   type        = string
-  default     = "ami-0c55b159cbfafe1f0" # Amazon Linux 2 AMI
+  default     = "ami-0c02fb55956c7d316" # Updated Amazon Linux 2023 AMI for us-east-1
 }
 
 variable "instance_type" {
-  description = "Instance type for EC2 instances"
+  description = "Instance type for EC2 instances (Free tier eligible)"
   type        = string
-  default     = "t3.small"
-}
-
-variable "min_size" {
-  description = "Minimum size of the Auto Scaling Group"
-  type        = number
-  default     = 1
-}
-
-variable "max_size" {
-  description = "Maximum size of the Auto Scaling Group"
-  type        = number
-  default     = 3
-}
-
-variable "desired_capacity" {
-  description = "Desired capacity of the Auto Scaling Group"
-  type        = number
-  default     = 2
+  default     = "t2.micro" # Free tier eligible
 }
 
 variable "frontend_image" {
@@ -70,22 +52,13 @@ variable "backend_image" {
   default     = "yourdockerhub/campus-compass-backend:latest"
 }
 
-variable "db_username" {
-  description = "Username for database"
-  type        = string
-  default     = "admin"
-  sensitive   = true
-}
-
-variable "db_password" {
-  description = "Password for database"
-  type        = string
-  default     = "changeme"
-  sensitive   = true
-}
-
 variable "s3_bucket_name" {
-  description = "Name for S3 bucket to store static assets"
+  description = "Name for S3 bucket to store static assets (must be globally unique)"
   type        = string
-  default     = "campus-compass-static-assets"
+  default     = "campus-compass-static-assets-${random_id.bucket_suffix.hex}"
+}
+
+# Random ID for S3 bucket name uniqueness
+resource "random_id" "bucket_suffix" {
+  byte_length = 4
 }
