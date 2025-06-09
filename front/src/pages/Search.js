@@ -151,6 +151,7 @@ const Search = () => {
   const [originalResults, setOriginalResults] = useState([]); // Store original results
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1); // Initialize page state
   const [filters, setFilters] = useState({
     location: "",
     listingType: "",
@@ -492,3 +493,5 @@ const Search = () => {
 };
 
 export default Search;
+
+
